@@ -7,6 +7,8 @@ var clockData = {
   date: ''
 };
 
+var currencyInfo = 'Loading...';
+
 // Every minute
 // https://developer.pebble.com/docs/rockyjs/rocky/#on
 rocky.on('minutechange', function(event) {
@@ -56,13 +58,28 @@ rocky.on('draw', function(event) {
   ctx.fillText(clockData.time, centerX, (66 - offsetY));
 
   // Date font
+  ctx.fillStyle = '#f60';
   ctx.font = '18px bold Gothic';
 
   // Date
   ctx.fillText(clockData.date, centerX, (94 - offsetY));
+
+  // Currency info font
+  ctx.font = '14px bold Gothic';
+  ctx.fillStyle = '#3EAAFF';
+
+  // Curreny info:
+  ctx.fillText(currencyInfo, centerX, (140 - offsetY));
 });
 
 
 // Send a single message to the Phone
 // https://developer.pebble.com/docs/rockyjs/rocky/#postMessage
 rocky.postMessage("This arrives on the phone via bluetooth!");
+
+// Listen for messages from pkjs
+// https://developer.pebble.com/docs/rockyjs/rocky/#RockyMessageCallback
+rocky.on("message", function(event) {
+  currencyInfo = '$1 = EUR ' + event.data.USDToEUR;
+  rocky.requestDraw();
+});
